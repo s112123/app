@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>BOARD LIST</title>
+</head>
+<body>
+    <h3>Board List</h3>
+    <div>글 개수: [[${response.size}]]</div>
+    <table>
+        <thead>
+        <tr>
+            <th>No</th>
+            <th>Title</th>
+            <th>Writer</th>
+            <th>Registration Date</th>
+            <th>Hits</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="board : ${response.data}">
+            <td th:text="${board.boardId}"></td>
+            <td><a th:href="@{/board/view(board_id=${board.boardId})}">[[${board.title}]]</a></td>
+            <td th:text="${board.writer}"></td>
+            <td th:text="${#strings.replace(board.regDate, 'T', ' ')}"></td>
+            <td th:text="${board.hits}"></td>
+        </tr>
+        </tbody>
+    </table>
+    <button type="button" id="btn-write">WRITE</button>
+
+    <!-- Javascript -->
+    <script th:inline="javascript">
+        const btnWrite = document.getElementById('btn-write');
+        btnWrite.addEventListener('click', () => {
+            location.href = `/board/write`;
+        });
+    </script>
+</body>
+</html>

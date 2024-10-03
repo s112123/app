@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>BOARD VIEW</title>
+</head>
+<body>
+    <h3>Board View</h3>
+    <p><a href="/board/list">Board List</a></p>
+    <input type="text" th:value="${response.title}" readonly />
+    <input type="text" th:value="${response.writer}" readonly />
+    <input type="text" th:value="${response.content}" readonly />
+    <input type="text" name="regDate" th:value="${#strings.replace(response.regDate, 'T', ' ')}" readonly />
+    <input type="text" name="modDate" th:value="${#strings.replace(response.modDate, 'T', ' ')}" readonly />
+    <button type="button" id="btn-edit">EDIT</button>
+
+    <!-- Javascript -->
+    <script th:inline="javascript">
+        const boardId = [[${response.boardId}]];
+        const btnEdit = document.getElementById('btn-edit');
+        btnEdit.addEventListener('click', () => {
+            location.href = `/board/edit?board_id=${boardId}`;
+        });
+    </script>
+</body>
+</html>
