@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.demo.mapper.module.member.repository.mapper.MemberMapper">
+
+    <!-- 회원 정보 변경 -->
+    <update id="updateMember">
+        update member
+        set username = #{member.username},
+            password = #{member.password}
+        where email = #{email}
+    </update>
+
+    <!-- 회원 상태 변경 -->
+    <update id="updateMemberStatus">
+        update member
+        set status = #{status}
+        where email = #{email}
+    </update>
+
+    <!-- 회원 권한 변경 -->
+    <update id="updateMemberRole">
+        update member
+        set role_id = #{roleId}
+        where email = #{email}
+    </update>
+</mapper>
+
+
+

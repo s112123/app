@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.demo.mapper.module.member.repository.mapper.MemberMapper">
+
+    <!-- 권한 번호 조회 -->
+    <select id="getRoleId" resultType="int">
+        select id
+        from role
+        where role = #{role}
+    </select>
+
+    <!-- 권한 조회 -->
+    <select id="getRole" resultType="MemberRole">
+        select role
+        from role
+        where id = #{roleId}
+    </select>
+
+    <!-- 회원 조회 (by Id) -->
+    <select id="findById" resultType="Member">
+        <include refid="selectMember" />
+        where id = #{id}
+    </select>
+
+    <!-- 회원 조회 (by Email) -->
+    <select id="findByEmail" resultType="Member">
+        <include refid="selectMember" />
+        where email = #{email}
+    </select>
+
+    <!-- 회원 목록 -->
+    <select id="findAll" resultType="Member">
+        <include refid="selectMember" />
+        order by reg_date desc;
+    </select>
+
+    <!-- Common SQL -->
+    <sql id="selectMember">
+        select id,
+               role_id,
+               email,
+               username,
+               password,
+               status,
+               reg_date,
+               mod_date
+        from member
+    </sql>
+</mapper>
