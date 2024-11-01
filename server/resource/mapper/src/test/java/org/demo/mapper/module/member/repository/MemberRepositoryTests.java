@@ -1,8 +1,11 @@
 package org.demo.mapper.module.member.repository;
 
+import org.demo.mapper.module.file.response.FileInformation;
 import org.demo.mapper.module.member.domain.Member;
 import org.demo.mapper.module.member.domain.MemberRole;
 import org.demo.mapper.module.member.domain.MemberStatus;
+import org.demo.mapper.module.member.request.MemberRequest;
+import org.demo.mapper.module.member.request.MemberUpdateRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +28,10 @@ class MemberRepositoryTests {
     @Test
     @DisplayName("Save Member")
     void saveMember() {
-        Member member = new Member("a1234@demo.com", "a1234", "1234");
+        FileInformation fileInformation =
+                new FileInformation("filePath", "originalFileName", "uploadFileName", "extension");
+        MemberRequest memberRequest = new MemberRequest("email@email.com", "username", "password", fileInformation);
+        Member member = new Member(memberRequest);
 
         Member saveMember = memberRepository.save(member);
 
@@ -40,7 +46,10 @@ class MemberRepositoryTests {
     @Test
     @DisplayName("Find Member By Id")
     void findMemberById() {
-        Member member = new Member("a1234@demo.com", "a1234", "1234");
+        FileInformation fileInformation =
+                new FileInformation("filePath", "originalFileName", "uploadFileName", "extension");
+        MemberRequest memberRequest = new MemberRequest("email@email.com", "username", "password", fileInformation);
+        Member member = new Member(memberRequest);
 
         Member saveMember = memberRepository.save(member);
         Member findMember = memberRepository.findById(saveMember.getId()).orElseThrow();
@@ -56,8 +65,11 @@ class MemberRepositoryTests {
     @Test
     @DisplayName("Find Member By Email")
     void findMemberByEmail() {
-        String email = "a1234@demo.com";
-        Member member = new Member(email, "a1234", "1234");
+        String email = "email@email.com";
+        FileInformation fileInformation =
+                new FileInformation("filePath", "originalFileName", "uploadFileName", "extension");
+        MemberRequest memberRequest = new MemberRequest(email, "username", "password", fileInformation);
+        Member member = new Member(memberRequest);
 
         Member saveMember = memberRepository.save(member);
         Member findMember = memberRepository.findByEmail(email).orElseThrow();
@@ -73,7 +85,10 @@ class MemberRepositoryTests {
     @Test
     @DisplayName("Find Member By No Email")
     void findMemberByNoEmail() {
-        Member member = new Member("a1234@demo.com", "a1234", "1234");
+        FileInformation fileInformation =
+                new FileInformation("filePath", "originalFileName", "uploadFileName", "extension");
+        MemberRequest memberRequest = new MemberRequest("email@email.com", "username", "password", fileInformation);
+        Member member = new Member(memberRequest);
 
         memberRepository.save(member);
 
@@ -84,8 +99,12 @@ class MemberRepositoryTests {
     @Test
     @DisplayName("Find Members")
     void findMembers() {
+        FileInformation fileInformation =
+                new FileInformation("filePath", "originalFileName", "uploadFileName", "extension");
         for (int i = 1; i <= 255; i++) {
-            Member member = new Member("a" + i + "@demo.com", "a" + i, "1234");
+            MemberRequest memberRequest =
+                    new MemberRequest("email" + i + "@email.com", "username" + i, "password", fileInformation);
+            Member member = new Member(memberRequest);
             memberRepository.save(member);
         }
         List<Member> findMembers = memberRepository.findAll();
@@ -96,23 +115,30 @@ class MemberRepositoryTests {
     @Test
     @DisplayName("Update Member Information")
     void updateMemberInformation() {
-        String email = "a1234@demo.com";
-        Member member = new Member(email, "a1234", "1234");
+        String email = "email@email.com";
+        FileInformation fileInformation =
+                new FileInformation("filePath", "originalFileName", "uploadFileName", "extension");
+        MemberRequest memberRequest = new MemberRequest(email, "username", "password", fileInformation);
+        Member member = new Member(memberRequest);
 
         memberRepository.save(member);
-        Member updateMember = new Member(email, "a0000", "0000");
+        MemberUpdateRequest memberUpdateRequest = new MemberUpdateRequest("newUsername", "newPassword");
+        Member updateMember = new Member(memberUpdateRequest);
         memberRepository.updateMember(email, updateMember);
         Member findMember = memberRepository.findByEmail(email).orElseThrow();
 
-        assertThat(findMember.getUsername()).isEqualTo("a0000");
-        assertThat(findMember.getPassword()).isEqualTo("0000");
+        assertThat(findMember.getUsername()).isEqualTo("newUsername");
+        assertThat(findMember.getPassword()).isEqualTo("newPassword");
     }
 
     @Test
     @DisplayName("Update Member Status")
     void updateMemberStatus() {
-        String email = "a1234@demo.com";
-        Member member = new Member(email, "a1234", "1234");
+        String email = "email@email.com";
+        FileInformation fileInformation =
+                new FileInformation("filePath", "originalFileName", "uploadFileName", "extension");
+        MemberRequest memberRequest = new MemberRequest(email, "username", "password", fileInformation);
+        Member member = new Member(memberRequest);
 
         memberRepository.save(member);
         memberRepository.updateMemberStatus(email, MemberStatus.ONLINE);
@@ -124,8 +150,11 @@ class MemberRepositoryTests {
     @Test
     @DisplayName("Update Member Role")
     void updateMemberRole() {
-        String email = "a1234@demo.com";
-        Member member = new Member(email, "a1234", "1234");
+        String email = "email@email.com";
+        FileInformation fileInformation =
+                new FileInformation("filePath", "originalFileName", "uploadFileName", "extension");
+        MemberRequest memberRequest = new MemberRequest(email, "username", "password", fileInformation);
+        Member member = new Member(memberRequest);
 
         memberRepository.save(member);
         memberRepository.updateMemberRole(email, MemberRole.ADMIN);
@@ -137,7 +166,11 @@ class MemberRepositoryTests {
     @Test
     @DisplayName("Delete Member By Id")
     void deleteMemberById() {
-        Member member = new Member("a1234@demo.com", "a1234", "1234");
+        String email = "email@email.com";
+        FileInformation fileInformation =
+                new FileInformation("filePath", "originalFileName", "uploadFileName", "extension");
+        MemberRequest memberRequest = new MemberRequest(email, "username", "password", fileInformation);
+        Member member = new Member(memberRequest);
 
         Member saveMember = memberRepository.save(member);
         memberRepository.deleteById(saveMember.getId());
@@ -149,7 +182,11 @@ class MemberRepositoryTests {
     @Test
     @DisplayName("Delete Member By Email")
     void deleteMemberByEmail() {
-        Member member = new Member("a1234@demo.com", "a1234", "1234");
+        String email = "email@email.com";
+        FileInformation fileInformation =
+                new FileInformation("filePath", "originalFileName", "uploadFileName", "extension");
+        MemberRequest memberRequest = new MemberRequest(email, "username", "password", fileInformation);
+        Member member = new Member(memberRequest);
 
         Member saveMember = memberRepository.save(member);
         memberRepository.deleteByEmail(saveMember.getEmail());

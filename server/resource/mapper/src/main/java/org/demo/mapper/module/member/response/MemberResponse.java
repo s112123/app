@@ -19,14 +19,14 @@ public class MemberResponse {
     private LocalDateTime regDate;
     private LocalDateTime modDate;
 
-    public MemberResponse(Member saveMember) {
-        this.id = saveMember.getId();
-        this.email = saveMember.getEmail();
-        this.username = saveMember.getUsername();
-        this.password = saveMember.getPassword();
-        this.status = saveMember.getStatus();
-        this.regDate = saveMember.getRegDate();
-        this.modDate = saveMember.getModDate();
+    public MemberResponse(Member member) {
+        this.id = member.getId();
+        this.email = member.getEmail();
+        this.username = member.getUsername();
+        this.password = member.getPassword();
+        this.status = member.getStatus();
+        this.regDate = member.getRegDate();
+        this.modDate = member.getModDate();
     }
 
     public void addRole(MemberRole role) {

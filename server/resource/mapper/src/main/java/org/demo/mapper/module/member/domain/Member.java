@@ -20,12 +20,6 @@ public class Member {
     private LocalDateTime regDate;
     private LocalDateTime modDate;
 
-    public Member(String email, String username, String password) {
-        this.email = email;
-        this.username = username;
-        this.password = password;
-    }
-
     public Member(MemberRequest request) {
         this.email = request.getEmail();
         this.username = request.getUsername();

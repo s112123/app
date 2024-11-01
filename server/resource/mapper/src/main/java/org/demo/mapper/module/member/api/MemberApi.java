@@ -1,7 +1,6 @@
 package org.demo.mapper.module.member.api;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.ibatis.annotations.Param;
 import org.demo.mapper.module.member.domain.Member;
 import org.demo.mapper.module.member.domain.MemberRole;
 import org.demo.mapper.module.member.domain.MemberStatus;

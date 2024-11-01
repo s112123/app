@@ -1,9 +1,11 @@
 package org.demo.mapper.module.member.service;
 
+import org.demo.mapper.module.file.mapper.FileMapper;
+import org.demo.mapper.module.file.response.FileInformation;
 import org.demo.mapper.module.member.domain.Member;
 import org.demo.mapper.module.member.domain.MemberRole;
 import org.demo.mapper.module.member.domain.MemberStatus;
-import org.demo.mapper.module.member.exception.DuplicateEmailException;
+import org.demo.mapper.module.member.exception.DuplicatedEmailException;
 import org.demo.mapper.module.member.exception.NotFoundEmailException;
 import org.demo.mapper.module.member.repository.MemberRepository;
 import org.demo.mapper.module.member.request.MemberRequest;
@@ -15,6 +17,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +31,8 @@ class MemberServiceTests {
 
     @Mock
     private MemberRepository memberRepository;
+    @Mock
+    private FileMapper fileMapper;
     @InjectMocks
     private MemberServiceImpl memberService;
 
@@ -47,26 +52,37 @@ class MemberServiceTests {
     @Test
     @DisplayName("Save Member With No Duplicated Email")
     void saveMemberWithNoDuplicatedEmail() {
-        String email = "a1234@demo.com";
-        MemberRequest memberRequest = new MemberRequest(email, "a1234", "1234");
+        String email = "email@email.com";
+        FileInformation fileInformation =
+                new FileInformation("filePath", "originalFileName", "uploadFileName", "extension");
+        MemberRequest memberRequest = new MemberRequest(email, "username", "password", fileInformation);
 
         when(memberRepository.findByEmail(email)).thenReturn(Optional.empty());
-        when(memberRepository.save(any(Member.class))).thenReturn(new Member(memberRequest));
+        when(memberRepository.save(any(Member.class))).thenAnswer(invocation -> {
+            Member member = invocation.getArgument(0);
+            // Setter 가 없는 경우
+            ReflectionTestUtils.setField(member, "id", 1L);
+            return member;
+        });
+        doNothing().when(fileMapper).saveProfileImage(any(Long.class), any(FileInformation.class));
         memberService.save(memberRequest);
 
         verify(memberRepository, times(1)).findByEmail(email);
         verify(memberRepository, times(1)).save(any(Member.class));
+        verify(fileMapper, times(1)).saveProfileImage(any(Long.class), any(FileInformation.class));
     }
 
     @Test
     @DisplayName("Save Member With Duplicated Email")
     void saveMemberWithDuplicatedEmail() {
-        String email = "a1234@demo.com";
-        MemberRequest memberRequest = new MemberRequest(email, "a1234", "1234");
+        String email = "email@email.com";
+        FileInformation fileInformation =
+                new FileInformation("filePath", "originalFileName", "uploadFileName", "extension");
+        MemberRequest memberRequest = new MemberRequest(email, "username", "password", fileInformation);
 
         when(memberRepository.findByEmail(email)).thenReturn(Optional.of(new Member(memberRequest)));
 
-        assertThatExceptionOfType(DuplicateEmailException.class)
+        assertThatExceptionOfType(DuplicatedEmailException.class)
                 .isThrownBy(() -> memberService.save(memberRequest));
 
         verify(memberRepository, times(1)).findByEmail(email);
@@ -76,8 +92,10 @@ class MemberServiceTests {
     @Test
     @DisplayName("Find Member By Exists Email")
     void findMemberByExistsEmail() {
-        String email = "a1234@demo.com";
-        MemberRequest memberRequest = new MemberRequest(email, "a1234", "1234");
+        String email = "email@email.com";
+        FileInformation fileInformation =
+                new FileInformation("filePath", "originalFileName", "uploadFileName", "extension");
+        MemberRequest memberRequest = new MemberRequest(email, "username", "password", fileInformation);
 
         when(memberRepository.findByEmail(email)).thenReturn(Optional.of(new Member(memberRequest)));
         Member findMember = memberService.findByEmail(email);
@@ -92,8 +110,10 @@ class MemberServiceTests {
     @Test
     @DisplayName("Find Member By Not Exists Email")
     void findMemberByNotExistsEmail() {
-        String email = "a1234@demo.com";
-        MemberRequest memberRequest = new MemberRequest(email, "a1234", "1234");
+        String email = "email@email.com";
+        FileInformation fileInformation =
+                new FileInformation("filePath", "originalFileName", "uploadFileName", "extension");
+        MemberRequest memberRequest = new MemberRequest(email, "username", "password", fileInformation);
 
         when(memberRepository.findByEmail(email)).thenReturn(Optional.empty());
 
@@ -107,8 +127,11 @@ class MemberServiceTests {
     @DisplayName("Find Members")
     void findMembers() {
         List<Member> members = new ArrayList<>();
+        FileInformation fileInformation =
+                new FileInformation("filePath", "originalFileName", "uploadFileName", "extension");
         for (int i = 1; i <= 255; i++) {
-            MemberRequest memberRequest = new MemberRequest("a" + i + "@demo.com", "a" + i, "1234");
+            MemberRequest memberRequest =
+                    new MemberRequest("email" + i + "@email.com", "username" + i, "password", fileInformation);
             members.add(new Member(memberRequest));
         }
 
@@ -124,9 +147,9 @@ class MemberServiceTests {
     @DisplayName("Update Member Information")
     void updateMemberInformation() {
         // 수정된 결과의 기대값으로 만약, MemberRequest 에 다른 값을 넣으면 검증에서 실패한다
-        String email = "a1234@demo.com";
-        String newUsername = "a0000";
-        String newPassword = "0000";
+        String email = "email@email.com";
+        String newUsername = "newUsername";
+        String newPassword = "newPassword";
         MemberUpdateRequest updateRequest = new MemberUpdateRequest(newUsername, newPassword);
 
         // ArgumentCaptor 를 사용하면 전달된 Member 객체가 업데이트 되었는지 검증할 수 있다
@@ -145,7 +168,7 @@ class MemberServiceTests {
     @Test
     @DisplayName("Update Member Status")
     void updateMemberStatus() {
-        String email = "a1234@demo.com";
+        String email = "email@email.com";
         MemberStatus status = MemberStatus.ONLINE;
 
         doNothing().when(memberRepository).updateMemberStatus(email, status);
@@ -157,7 +180,7 @@ class MemberServiceTests {
     @Test
     @DisplayName("Update Member Role")
     void updateMemberRole() {
-        String email = "a1234@demo.com";
+        String email = "email@email.com";
         MemberRole role = MemberRole.ADMIN;
 
         doNothing().when(memberRepository).updateMemberRole(email, role);
@@ -180,7 +203,7 @@ class MemberServiceTests {
     @Test
     @DisplayName("Delete Member By Email")
     void deleteMemberByEmail() {
-        String email = "a1234@demo.com";
+        String email = "email@email.com";
         ArgumentCaptor<String> emailCaptor = ArgumentCaptor.forClass(String.class);
 
         doNothing().when(memberRepository).deleteByEmail(email);

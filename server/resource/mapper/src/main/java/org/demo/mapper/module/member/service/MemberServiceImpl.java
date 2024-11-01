@@ -1,10 +1,11 @@
 package org.demo.mapper.module.member.service;
 
 import lombok.RequiredArgsConstructor;
+import org.demo.mapper.module.file.mapper.FileMapper;
 import org.demo.mapper.module.member.domain.Member;
 import org.demo.mapper.module.member.domain.MemberRole;
 import org.demo.mapper.module.member.domain.MemberStatus;
-import org.demo.mapper.module.member.exception.DuplicateEmailException;
+import org.demo.mapper.module.member.exception.DuplicatedEmailException;
 import org.demo.mapper.module.member.exception.NotFoundEmailException;
 import org.demo.mapper.module.member.repository.MemberRepository;
 import org.demo.mapper.module.member.request.MemberRequest;
@@ -20,6 +21,7 @@ import java.util.List;
 public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
+    private final FileMapper fileMapper;
 
     // 권한 번호 조회
     @Override
@@ -38,9 +40,13 @@ public class MemberServiceImpl implements MemberService {
     public Member save(MemberRequest memberRequest) {
         // 중복 아이디 체크
         if (memberRepository.findByEmail(memberRequest.getEmail()).isPresent()) {
-            throw new DuplicateEmailException();
+            throw new DuplicatedEmailException();
         }
-        return memberRepository.save(new Member(memberRequest));
+        // 회원 정보 저장
+        Member saved = memberRepository.save(new Member(memberRequest));
+        // 프로필 이미지 정보 등록
+        fileMapper.saveProfileImage(saved.getId(), memberRequest.getFileInformation());
+        return saved;
     }
 
     // 회원 조회 (by Email)

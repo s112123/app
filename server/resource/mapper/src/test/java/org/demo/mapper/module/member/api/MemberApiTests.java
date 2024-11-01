@@ -1,6 +1,7 @@
 package org.demo.mapper.module.member.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.demo.mapper.module.file.response.FileInformation;
 import org.demo.mapper.module.member.domain.Member;
 import org.demo.mapper.module.member.domain.MemberRole;
 import org.demo.mapper.module.member.domain.MemberStatus;
@@ -37,13 +38,15 @@ class MemberApiTests {
     @Test
     @DisplayName("Save Member With No Duplicated Email")
     void saveMemberWithNoDuplicatedEmail() throws Exception {
-        MemberRequest memberRequest = new MemberRequest("a1234@demo.com", "a1234", "1234");
+        FileInformation fileInformation =
+                new FileInformation("filePath", "originalFileName", "uploadFileName", "extension");
+        MemberRequest memberRequest = new MemberRequest("email@email.com", "username", "password", fileInformation);
 
         mockMvc.perform(post("/api/members")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(memberRequest)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.email", is("a1234@demo.com")))
+                .andExpect(jsonPath("$.email", is("email@email.com")))
                 .andExpect(jsonPath("$.role", is(MemberRole.USER.toString())))
                 .andDo(print());
     }
@@ -51,7 +54,9 @@ class MemberApiTests {
     @Test
     @DisplayName("Save Member With Duplicated Email")
     void saveMemberWithDuplicatedEmail() throws Exception {
-        MemberRequest memberRequest = new MemberRequest("a1234@demo.com", "a1234", "1234");
+        FileInformation fileInformation =
+                new FileInformation("filePath", "originalFileName", "uploadFileName", "extension");
+        MemberRequest memberRequest = new MemberRequest("email@email.com", "username", "password", fileInformation);
         memberService.save(memberRequest);
 
         mockMvc.perform(post("/api/members")
@@ -64,9 +69,11 @@ class MemberApiTests {
     @Test
     @DisplayName("Find Member With Exists Email")
     void findMemberWithExistsEmail() throws Exception {
-        String email = "a1234@demo.com";
-        String password = "1234";
-        MemberRequest memberRequest = new MemberRequest(email, "a1234", password);
+        String email = "email@email.com";
+        String password = "password";
+        FileInformation fileInformation =
+                new FileInformation("filePath", "originalFileName", "uploadFileName", "extension");
+        MemberRequest memberRequest = new MemberRequest(email, "username", password, fileInformation);
         Member saveMember = memberService.save(memberRequest);
         MemberResponse memberResponse = new MemberResponse(saveMember);
 
@@ -84,7 +91,7 @@ class MemberApiTests {
     @Test
     @DisplayName("Find Member With Not Exists Email")
     void findMemberWithNotExistsEmail() throws Exception {
-        String email = "a1234@demo.com";
+        String email = "email@email.com";
 
         mockMvc.perform(get("/api/members/" + email))
                 .andExpect(status().isNotFound())
@@ -94,8 +101,11 @@ class MemberApiTests {
     @Test
     @DisplayName("Find Members")
     void findMembers() throws Exception {
+        FileInformation fileInformation =
+                new FileInformation("filePath", "originalFileName", "uploadFileName", "extension");
         for (int i = 1; i <= 255; i++) {
-            MemberRequest memberRequest = new MemberRequest("a" + i + "@demo.com", "a" + i, "1234");
+            MemberRequest memberRequest =
+                    new MemberRequest("email" + i + "@email.com", "username" + i, "1234", fileInformation);
             memberService.save(memberRequest);
         }
 
@@ -109,10 +119,12 @@ class MemberApiTests {
     @Test
     @DisplayName("Update Member Information")
     void updateMemberInformation() throws Exception {
-        String email = "a1234@demo.com";
-        MemberRequest memberRequest = new MemberRequest(email, "a1234", "1234");
+        String email = "email@email.com";
+        FileInformation fileInformation =
+                new FileInformation("filePath", "originalFileName", "uploadFileName", "extension");
+        MemberRequest memberRequest = new MemberRequest(email, "username", "password", fileInformation);
         memberService.save(memberRequest);
-        MemberUpdateRequest updateRequest = new MemberUpdateRequest("a0000", "0000");
+        MemberUpdateRequest updateRequest = new MemberUpdateRequest("newUsername", "newPassword");
 
         mockMvc.perform(patch("/api/members/" + email)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -121,12 +133,13 @@ class MemberApiTests {
                 .andDo(print());
     }
 
-    // 회원 상태 수정
     @Test
     @DisplayName("Update Member Status")
     void updateMemberStatus() throws Exception {
-        String email = "a1234@demo.com";
-        MemberRequest memberRequest = new MemberRequest(email, "a1234", "1234");
+        String email = "email@email.com";
+        FileInformation fileInformation =
+                new FileInformation("filePath", "originalFileName", "uploadFileName", "extension");
+        MemberRequest memberRequest = new MemberRequest(email, "username", "password", fileInformation);
         memberService.save(memberRequest);
         MemberStatus updateStatus = MemberStatus.ONLINE;
 
@@ -135,12 +148,13 @@ class MemberApiTests {
                 .andDo(print());
     }
 
-    // 회원 권한 수정
     @Test
     @DisplayName("Update Member Role")
     void updateMemberRole() throws Exception {
-        String email = "a1234@demo.com";
-        MemberRequest memberRequest = new MemberRequest(email, "a1234", "1234");
+        String email = "email@email.com";
+        FileInformation fileInformation =
+                new FileInformation("filePath", "originalFileName", "uploadFileName", "extension");
+        MemberRequest memberRequest = new MemberRequest(email, "username", "password", fileInformation);
         memberService.save(memberRequest);
         MemberRole updateRole = MemberRole.ADMIN;
 
@@ -152,8 +166,10 @@ class MemberApiTests {
     @Test
     @DisplayName("Delete Member By Email")
     void deleteMemberByEmail() throws Exception {
-        String email = "a1234@demo.com";
-        MemberRequest memberRequest = new MemberRequest(email, "a1234", "1234");
+        String email = "email@email.com";
+        FileInformation fileInformation =
+                new FileInformation("filePath", "originalFileName", "uploadFileName", "extension");
+        MemberRequest memberRequest = new MemberRequest(email, "username", "password", fileInformation);
         memberService.save(memberRequest);
 
         mockMvc.perform(delete("/api/members/" + email))

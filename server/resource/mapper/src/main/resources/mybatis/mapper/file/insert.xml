@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.demo.mapper.module.file.mapper.FileMapper">
+
+    <!-- 회원 등록 -->
+    <insert id="saveProfileImage">
+        insert into profile_image (
+            id,
+            file_path,
+            original_file_name,
+            upload_file_name,
+            extension
+        ) values (
+            #{memberId},
+            #{information.filePath},
+            #{information.originalFileName},
+            #{information.uploadFileName},
+            #{information.extension}
+        )
+    </insert>
+</mapper>
