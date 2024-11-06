@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.demo.mapper.module.member.repository.mapper.RoleMapper">
+
+    <!-- 권한 번호 조회 -->
+    <select id="findRoleId" resultType="int">
+        select id
+        from role
+        where role = #{role}
+    </select>
+
+    <!-- 권한 이름 조회 -->
+    <select id="findRole" resultType="Role">
+        select role
+        from role
+        where id = #{roleId}
+    </select>
+</mapper>

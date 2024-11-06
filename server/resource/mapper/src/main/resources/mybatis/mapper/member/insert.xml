@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.demo.mapper.module.member.repository.mapper.MemberMapper">
+
+    <!-- 회원 등록 -->
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        insert into member (email, username, password)
+        values (#{email}, #{username}, #{password})
+    </insert>
+</mapper>

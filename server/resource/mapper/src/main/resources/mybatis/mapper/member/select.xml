@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.demo.mapper.module.member.repository.mapper.MemberMapper">
+
+    <!-- 회원 정보 -->
+    <resultMap id="memberResultMap" type="Member">
+        <id property="id" column="id"/>
+        <result property="email" column="email"/>
+        <result property="username" column="username"/>
+        <result property="password" column="password"/>
+        <result property="regDate" column="reg_date"/>
+    </resultMap>
+
+    <!-- 회원 조회 -->
+    <select id="findById" resultMap="memberResultMap">
+        select id,
+               email,
+               username,
+               password,
+               reg_date
+        from member
+        where id = #{memberId}
+    </select>
+
+    <!-- 회원 권한 조회 -->
+    <select id="findMemberRoles" resultType="Role">
+        select r.role
+        from role as r
+        inner join member_role as mr
+            on r.id = mr.role_id
+        where mr.member_id = #{memberId};
+    </select>
+</mapper>
