@@ -1,6 +1,7 @@
 package org.demo.mapper.module.member.service;
 
-import org.demo.mapper.module.member.details.MemberDetails;
+import org.demo.mapper.module.member.request.MemberNew;
+import org.demo.mapper.module.member.response.MemberDetails;
 import org.demo.mapper.module.member.domain.Member;
 import org.demo.mapper.module.member.domain.Role;
 import org.demo.mapper.module.member.repository.MemberRepository;
@@ -35,14 +36,15 @@ class MemberServiceTests {
         String email = "a1234@email.com";
         String username = "a1234";
         String password = "1234";
-        MemberRequest expected = new MemberRequest(email, username, password);
+        MemberNew memberNew = new MemberNew(email, username, password);
+        MemberRequest expected = new MemberRequest(memberNew);
 
         // stub
         Member findMember = Member.builder()
                 .id(1L)
-                .email(expected.getEmail())
-                .username(expected.getUsername())
-                .password(expected.getPassword())
+                .email(expected.getMemberNew().getEmail())
+                .username(expected.getMemberNew().getUsername())
+                .password(expected.getMemberNew().getPassword())
                 .build();
         when(memberRepository.save(any(Member.class))).thenReturn(findMember);
         when(memberRepository.findMemberRoles(findMember.getId())).thenReturn(Set.of(Role.USER));
@@ -51,7 +53,7 @@ class MemberServiceTests {
         MemberDetails actual = memberService.save(expected);
 
         // then
-        assertThat(actual.getEmail()).isEqualTo(expected.getEmail());
+        assertThat(actual.getEmail()).isEqualTo(expected.getMemberNew().getEmail());
         assertThat(actual.getRoles()).containsOnly(Role.USER);
 
         // verify

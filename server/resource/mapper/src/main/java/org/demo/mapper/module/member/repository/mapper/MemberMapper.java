@@ -15,6 +15,9 @@ public interface MemberMapper {
     // 회원 조회
     Member findById(Long memberId);
 
+    // 회원 조회
+    Member findByEmail(String email);
+
     // 회원 권한 조회
     Set<Role> findMemberRoles(Long memberId);
 }

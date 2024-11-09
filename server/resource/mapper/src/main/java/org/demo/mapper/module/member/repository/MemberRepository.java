@@ -14,6 +14,9 @@ public interface MemberRepository {
     // 회원 조회
     Optional<Member> findById(Long memberId);
 
+    // 회원 조회
+    Optional<Member> findByEmail(String email);
+
     // 회원 권한 조회
     Set<Role> findMemberRoles(Long memberId);
 

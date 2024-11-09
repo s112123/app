@@ -13,13 +13,14 @@
 
     <!-- 회원 조회 -->
     <select id="findById" resultMap="memberResultMap">
-        select id,
-               email,
-               username,
-               password,
-               reg_date
-        from member
+        <include refid="selectFromMember" />
         where id = #{memberId}
+    </select>
+
+    <!-- 회원 조회 -->
+    <select id = "findByEmail" resultMap="memberResultMap">
+        <include refid="selectFromMember" />
+        where email = #{email}
     </select>
 
     <!-- 회원 권한 조회 -->
@@ -30,4 +31,14 @@
             on r.id = mr.role_id
         where mr.member_id = #{memberId};
     </select>
+
+    <!-- select common sql -->
+    <sql id="selectFromMember">
+        select id,
+               email,
+               username,
+               password,
+               reg_date
+        from member
+    </sql>
 </mapper>

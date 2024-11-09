@@ -1,6 +1,7 @@
-package org.demo.mapper.module.member.details;
+package org.demo.mapper.module.member.response;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.demo.mapper.module.member.domain.Member;
 import org.demo.mapper.module.member.domain.Role;
 
@@ -8,6 +9,7 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 @Getter
+@NoArgsConstructor
 public class MemberDetails {
 
     private Long id;

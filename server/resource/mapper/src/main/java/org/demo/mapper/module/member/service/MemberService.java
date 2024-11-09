@@ -1,6 +1,6 @@
 package org.demo.mapper.module.member.service;
 
-import org.demo.mapper.module.member.details.MemberDetails;
+import org.demo.mapper.module.member.response.MemberDetails;
 import org.demo.mapper.module.member.request.MemberRequest;
 
 public interface MemberService {

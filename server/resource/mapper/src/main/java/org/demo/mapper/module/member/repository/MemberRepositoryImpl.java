@@ -34,6 +34,12 @@ public class MemberRepositoryImpl implements MemberRepository {
         return Optional.ofNullable(memberMapper.findById(memberId));
     }
 
+    // 회원 조회
+    @Override
+    public Optional<Member> findByEmail(String email) {
+        return Optional.ofNullable(memberMapper.findByEmail(email));
+    }
+
     // 회원 권한 조회
     @Override
     public Set<Role> findMemberRoles(Long memberId) {
