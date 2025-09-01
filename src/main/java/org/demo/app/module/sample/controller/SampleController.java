@@ -8,7 +8,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class SampleController {
 
     @GetMapping("/")
-    public ResponseEntity<?> sample() {
+    public ResponseEntity<?> sample1() {
         return ResponseEntity.ok("Hello Jenkins");
+    }
+
+    @GetMapping("/sample")
+    public ResponseEntity<?> sample2() {
+        return ResponseEntity.ok("Sample");
     }
 }
