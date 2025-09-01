@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class SampleController {
 
-    @GetMapping("/app")
-    ResponseEntity<?> sample() {
+    @GetMapping("/")
+    public ResponseEntity<?> sample() {
         return ResponseEntity.ok("Hello Jenkins");
     }
 }
