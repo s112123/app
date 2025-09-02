@@ -9,11 +9,11 @@ public class SampleController {
 
     @GetMapping("/")
     public ResponseEntity<?> sample1() {
-        return ResponseEntity.ok("Hello Jenkins");
+        return ResponseEntity.ok("Hello, Jenkins!");
     }
 
     @GetMapping("/sample")
     public ResponseEntity<?> sample2() {
-        return ResponseEntity.ok("This is Sample");
+        return ResponseEntity.ok("This is sample");
     }
 }
