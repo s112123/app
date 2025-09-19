@@ -14,6 +14,6 @@ public class SampleController {
 
     @GetMapping("/sample")
     public ResponseEntity<?> sample2() {
-        return ResponseEntity.ok("Hello, Sample!");
+        return ResponseEntity.ok("This is sample");
     }
 }
